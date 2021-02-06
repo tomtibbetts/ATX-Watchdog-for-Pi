@@ -48,7 +48,7 @@ except:
     pass
 finally:
     GPIO.cleanup()
-' > /etc/ATX-PSU_startup.py
+' > /etc/ATX-Watchdog_startup
 sudo chmod 755 /etc/ATX-Watchdog_startup.py
 sudo sed -i '$ i python /etc/ATX-Watchdog_startup.py &' /etc/rc.local
 echo '#!/usr/bin/python
@@ -64,7 +64,7 @@ bus.write_byte_data(ATX_WATCHDOG_ADDRESS, BOOT_OK_COMMAND, BOOT_NOT_OK)
 bus.close()
 ' > /usr/lib/systemd/ATX-Watchdog_shutdown.py
 echo '[Unit]
-Description=Signal the ATX-Watchdog that we're shutting down
+Description=Signal the ATX-Watchdog that we are shutting down
 
 [Service]
 Type=oneshot
