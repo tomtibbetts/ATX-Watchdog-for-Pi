@@ -48,7 +48,7 @@ except:
     pass
 finally:
     GPIO.cleanup()
-' > /etc/ATX-Watchdog_startup
+' > /etc/ATX-Watchdog_startup.py
 sudo chmod 755 /etc/ATX-Watchdog_startup.py
 sudo sed -i '$ i python /etc/ATX-Watchdog_startup.py &' /etc/rc.local
 echo '#!/usr/bin/python
