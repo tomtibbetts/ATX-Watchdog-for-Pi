@@ -1,7 +1,7 @@
 echo 'import RPi.GPIO as GPIO
 import os
 import sys
-import symbus
+import smbus
 import time
 
 GPIO.setmode(GPIO.BCM)
@@ -23,7 +23,7 @@ try:
     bus = smbus.SMBus(1)
     bus.write_byte_data(ATX_WATCHDOG_ADDRESS, BOOT_OK_COMMAND, BOOT_OK)
     bus.close()
-	
+
     while True:
         print ("\n== Waiting for shutdown pulse\n")
         GPIO.wait_for_edge(SHUTDOWN, GPIO.RISING)
@@ -48,9 +48,9 @@ except:
     pass
 finally:
     GPIO.cleanup()
-' > /etc/ATX-Watchdog_startup.py
-sudo chmod 755 /etc/ATX-Watchdog_startup.py
-sudo sed -i '$ i python /etc/ATX-Watchdog_startup.py &' /etc/rc.local
+' > /usr/local/bin/ATX-Watchdog_startup.py
+sudo chmod 755 /usr/local/bin/ATX-Watchdog_startup.py
+sudo sed -i '$ i python /usr/local/bin/ATX-Watchdog_startup.py &' /etc/rc.local
 echo '#!/usr/bin/python
 
 import smbus
@@ -62,14 +62,14 @@ BOOT_NOT_OK = 0x00          #Signal that we are shutting down
 bus = smbus.SMBus(1)
 bus.write_byte_data(ATX_WATCHDOG_ADDRESS, BOOT_OK_COMMAND, BOOT_NOT_OK)
 bus.close()
-' > /usr/lib/systemd/ATX-Watchdog_shutdown.py
+' > /usr/local/bin/ATX-Watchdog_shutdown.py
 echo '[Unit]
 Description=Signal the ATX-Watchdog that we are shutting down
 
 [Service]
 Type=oneshot
 RemainAfterExit=true
-ExecStop=/usr/lib/systemd/ATX-Watchdog_shutdown.py
+ExecStop=/usr/local/bin/ATX-Watchdog_shutdown.py
 
 [Install]
 WantedBy=multi-user.target
