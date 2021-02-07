@@ -1,3 +1,4 @@
+sudo mkdir /usr/local/bin/ATX-Watchdog
 echo 'import RPi.GPIO as GPIO
 import os
 import sys
@@ -48,12 +49,9 @@ except:
     pass
 finally:
     GPIO.cleanup()
-' > /usr/local/bin/ATX-Watchdog_startup.py
-sudo chmod 755 /usr/local/bin/ATX-Watchdog_startup.py
-sudo sed -i '$ i python /usr/local/bin/ATX-Watchdog_startup.py &' /etc/rc.local
-echo '#!/usr/bin/python
-
-import smbus
+' > /usr/local/bin/ATX-Watchdog/ATX-Watchdog_startup.py
+sudo chmod 755 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_startup.py
+echo 'import smbus
 
 ATX_WATCHDOG_ADDRESS = 0x5A #I2C address
 BOOT_OK_COMMAND = 0x83      #Set Boot Ok process
@@ -62,21 +60,34 @@ BOOT_NOT_OK = 0x00          #Signal that we are shutting down
 bus = smbus.SMBus(1)
 bus.write_byte_data(ATX_WATCHDOG_ADDRESS, BOOT_OK_COMMAND, BOOT_NOT_OK)
 bus.close()
-' > /usr/local/bin/ATX-Watchdog_shutdown.py
-sudo chmod 755 /usr/local/bin/ATX-Watchdog_shutdown.py
+' > /usr/local/bin/ATX-Watchdog/ATX-Watchdog_shutdown.py
+sudo chmod 755 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_shutdown.py
 sudo echo '[Unit]
 Description=Signal the ATX-Watchdog that we are shutting down
 
 [Service]
 Type=oneshot
 RemainAfterExit=true
-ExecStop=/usr/local/bin/ATX-Watchdog_shutdown.py
+ExecStop=/usr/bin/python /usr/local/bin/ATX-Watchdog/ATX-Watchdog_shutdown.py
 
 [Install]
 WantedBy=multi-user.target
 ' > /etc/systemd/system/ATX-Watchdog_shutdown.service
-sudo systemctl start ATX-Watchdog_shutdown
+sudo echo '[Unit]
+Description=Signal the ATX-Watchdog that we are shutting down
+
+[Service]
+Type=simple
+RemainAfterExit=true
+ExecStart=/usr/bin/python /usr/local/bin/ATX-Watchdog/ATX-Watchdog_startup.py
+
+[Install]
+WantedBy=multi-user.target
+' > /etc/systemd/system/ATX-Watchdog_startup.service
 sudo systemctl enable ATX-Watchdog_shutdown
+sudo systemctl start ATX-Watchdog_shutdown
+sudo systemctl enable ATX-Watchdog_startup
+sudo systemctl start ATX-Watchdog_startup
 
 
 
