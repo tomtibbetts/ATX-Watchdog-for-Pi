@@ -63,6 +63,7 @@ bus = smbus.SMBus(1)
 bus.write_byte_data(ATX_WATCHDOG_ADDRESS, BOOT_OK_COMMAND, BOOT_NOT_OK)
 bus.close()
 ' > /usr/local/bin/ATX-Watchdog_shutdown.py
+sudo chmod 755 /usr/local/bin/ATX-Watchdog_shutdown.py
 echo '[Unit]
 Description=Signal the ATX-Watchdog that we are shutting down
 
