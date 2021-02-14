@@ -1,4 +1,5 @@
 echo 'import smbus
+import time
 
 ATX_WATCHDOG_ADDRESS = 0x5A #I2C address
 WATCHDOG_KEEP_ALIVE = 0x82  #Ping ATX Watchdog command
