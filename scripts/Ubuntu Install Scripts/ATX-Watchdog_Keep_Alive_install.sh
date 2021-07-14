@@ -6,17 +6,19 @@ WATCHDOG_KEEP_ALIVE = 0x82  #Ping ATX Watchdog command
 
 while 1:
     bus = smbus.SMBus(1)
+    time.sleep(0.1)
     bus.write_byte_data(ATX_WATCHDOG_ADDRESS, WATCHDOG_KEEP_ALIVE, 0x00)
     bus.close()
     time.sleep(60)
 ' > /usr/local/bin/ATX-Watchdog/ATX-Watchdog_keepAlive.py
 sudo chmod 755 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_keepAlive.py
 sudo echo '[Unit]
-Description=Signal the ATX-Watchdog keep alive
+Description=ATX-Watchdog Keep Alive
 
 [Service]
 Type=simple
 RemainAfterExit=true
+Restart=on-failure
 ExecStart=/usr/bin/python3 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_keepAlive.py
 
 [Install]

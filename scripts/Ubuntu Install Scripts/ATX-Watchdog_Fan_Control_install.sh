@@ -27,6 +27,7 @@ def getCpuTemperature():
 # Set fan speed
 def setFanSpeed(speed):
     bus = smbus.SMBus(1)
+    time.sleep(0.1)
     bus.write_byte_data(ATX_WATCHDOG_ADDRESS, CHANGE_FAN_SPEED, speed)
     bus.close()
 
@@ -63,11 +64,13 @@ except KeyboardInterrupt: # trap a CTRL+C keyboard interrupt
     setFanSpeed(FAN_HIGH)' > /usr/local/bin/ATX-Watchdog/ATX-Watchdog_fanControl.py
 sudo chmod 755 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_fanControl.py
 sudo echo '[Unit]
-Description=Start the fan contoller
+Description=ATX Watchdog Fan Contoller
 
 [Service]
 Type=simple
 RemainAfterExit=true
+RestartSec=5
+Restart=on-failure
 ExecStart=/usr/bin/python3 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_fanControl.py
 
 [Install]

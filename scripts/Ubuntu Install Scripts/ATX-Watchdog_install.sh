@@ -22,6 +22,7 @@ GPIO.setup(SHUTDOWN, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 try:
     print ("\n== Signalling Boot Ok\n")
     bus = smbus.SMBus(1)
+    time.sleep(0.1)
     bus.write_byte_data(ATX_WATCHDOG_ADDRESS, BOOT_OK_COMMAND, BOOT_OK)
     bus.close()
 
@@ -52,33 +53,37 @@ finally:
 ' > /usr/local/bin/ATX-Watchdog/ATX-Watchdog_startup.py
 sudo chmod 755 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_startup.py
 echo 'import smbus
+import time
 
 ATX_WATCHDOG_ADDRESS = 0x5A #I2C address
 BOOT_OK_COMMAND = 0x83      #Set Boot Ok process
 BOOT_NOT_OK = 0x00          #Signal that we are shutting down
 
 bus = smbus.SMBus(1)
+time.sleep(0.1)
 bus.write_byte_data(ATX_WATCHDOG_ADDRESS, BOOT_OK_COMMAND, BOOT_NOT_OK)
 bus.close()
 ' > /usr/local/bin/ATX-Watchdog/ATX-Watchdog_shutdown.py
 sudo chmod 755 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_shutdown.py
 sudo echo '[Unit]
-Description=Signal the ATX-Watchdog that we are shutting down
+Description=ATX-Watchdog Shut Down
 
 [Service]
 Type=oneshot
 RemainAfterExit=true
+Restart=on-failure
 ExecStop=/usr/bin/python3 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_shutdown.py
 
 [Install]
 WantedBy=multi-user.target
 ' > /etc/systemd/system/ATX-Watchdog_shutdown.service
 sudo echo '[Unit]
-Description=Signal the ATX-Watchdog that we are shutting down
+Description=ATX-Watchdog Start up
 
 [Service]
 Type=simple
 RemainAfterExit=true
+Restart=on-failure
 ExecStart=/usr/bin/python3 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_startup.py
 
 [Install]
