@@ -1,6 +1,7 @@
-sudo rm -r /usr/local/bin/ATX-Watchdog
+sudo systemctl stop ATX-Watchdog_startup
+sudo systemctl stop ATX-Watchdog_shutdown
+sudo systemctl disable ATX-Watchdog_startup
+sudo systemctl disable ATX-Watchdog_shutdown
 sudo rm /etc/systemd/system/ATX-Watchdog*.*
-sudo systemctl stop /etc/systemd/system/ATX-Watchdog_startup.service
-sudo systemctl stop /etc/systemd/system/ATX-Watchdog_shutdown.service
-sudo systemctl disable /etc/systemd/system/ATX-Watchdog_startup.service
-sudo systemctl disable /etc/systemd/system/ATX-Watchdog_shutdown.service
+sudo rm -r /usr/local/bin/ATX-Watchdog
+
