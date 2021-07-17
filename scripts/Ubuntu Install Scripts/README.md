@@ -9,6 +9,8 @@ Before running these scripts you will need to install additional items:
 1. sudo apt-get install python3-rpi.gpio
 1. sudo apt install python3-smbus
 1. sudo apt install libraspberrypi-bin
+1. sudo usermod -aG video <user>
+1. sudo reboot
 
 Next, you may need to adjust the Shutdown Delay (register 0x31) and Remote Shutdown Delay (register 0x32) in order to
 allow plenty of time for the PI to properly shutdown from a command line reboot or shutdown.  I chose 15 seconds for
