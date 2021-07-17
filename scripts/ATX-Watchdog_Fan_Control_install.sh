@@ -68,7 +68,8 @@ Description=Start the fan contoller
 [Service]
 Type=simple
 RemainAfterExit=true
-ExecStart=/usr/bin/python /usr/local/bin/ATX-Watchdog/ATX-Watchdog_fanControl.py
+Restart=on-failure
+ExecStart=/usr/bin/python3 /usr/local/bin/ATX-Watchdog/ATX-Watchdog_fanControl.py
 
 [Install]
 WantedBy=multi-user.target
